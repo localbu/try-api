@@ -29,15 +29,27 @@
     <div id="instagram-posts"></div>
 
     <script>
-        const accessToken = 'IGQWROWF8weTBlTU9uZAFVLN3ZAfUkNKM3pINWxZAQnBDaGVta0FLcy1XOWU5R0RYQkEyUDc1d2VIQVFrTFEweG9zeVZAXYmZAlR2pLeGZAIRms3TEtBZAGVfRlplQ1hWYkhyay12Q0t0ZAmpXeUI3ZAk83YlNEako0ZA1NCM3cZD'; // Ganti dengan access token kamu
+        const accessToken = 'YOUR_ACCESS_TOKEN'; // Ganti dengan access token kamu
 
         fetch(`https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink&access_token=${accessToken}`)
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
+                console.log(data); // Debug respons API
+
+                if (!data || !data.data) {
+                    console.error('No data returned from API');
+                    return;
+                }
+
                 const postsContainer = document.getElementById('instagram-posts');
                 // Ambil hanya 5 postingan terakhir
                 const latestPosts = data.data.slice(0, 5);
-                
+
                 latestPosts.forEach(post => {
                     const postElement = document.createElement('div');
                     postElement.className = 'post';
