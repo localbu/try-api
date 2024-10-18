@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Posts</title>
+    <style>
+        #instagram-posts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .post {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            max-width: 300px;
+            max-height: 500px;
+            overflow: scroll;
+        }
+        .post img, .post video {
+            width: 100%;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Instagram Posts</h1>
+    <div id="instagram-posts"></div>
+
+    <script>
+        const accessToken = 'IGQWROWF8weTBlTU9uZAFVLN3ZAfUkNKM3pINWxZAQnBDaGVta0FLcy1XOWU5R0RYQkEyUDc1d2VIQVFrTFEweG9zeVZAXYmZAlR2pLeGZAIRms3TEtBZAGVfRlplQ1hWYkhyay12Q0t0ZAmpXeUI3ZAk83YlNEako0ZA1NCM3cZD'; // Ganti dengan access token kamu
+
+        fetch(`https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink&access_token=${accessToken}`)
+            .then(response => response.json())
+            .then(data => {
+                const postsContainer = document.getElementById('instagram-posts');
+                // Ambil hanya 5 postingan terakhir
+                const latestPosts = data.data.slice(0, 5);
+                
+                latestPosts.forEach(post => {
+                    const postElement = document.createElement('div');
+                    postElement.className = 'post';
+
+                    if (post.media_type === 'IMAGE' || post.media_type === 'CAROUSEL_ALBUM') {
+                        // Jika media adalah gambar
+                        postElement.innerHTML = `
+                            <a href="${post.permalink}" target="_blank">
+                                <img src="${post.media_url}" alt="${post.caption}" />
+                            </a>
+                            <p>${post.caption ? post.caption : ''}</p>
+                        `;
+                    } else if (post.media_type === 'VIDEO') {
+                        // Jika media adalah video
+                        postElement.innerHTML = `
+                            <a href="${post.permalink}" target="_blank">
+                                <video controls>
+                                    <source src="${post.media_url}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </a>
+                            <p>${post.caption ? post.caption : ''}</p>
+                        `;
+                    }
+
+                    postsContainer.appendChild(postElement);
+                });
+            })
+            .catch(error => console.error('Error fetching Instagram posts:', error));
+    </script>
+</body>
+</html>
