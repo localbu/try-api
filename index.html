@@ -29,18 +29,18 @@
     <div id="instagram-posts"></div>
 
     <script>
-        const accessToken = 'YOUR_ACCESS_TOKEN'; // Ganti dengan access token kamu
+        const accessToken = 'IGQWRPbWJzS0lETFpkUko5WGJTUkFEMTVLRS1GVmVFU0VNaWFiOUt4VDBIQnEwTEtWRVdvWmo4RGlFSW1XVEQzT2lMc0xZAc19vanJDbWpBZA0h3c08wek44VThBRnQwQjhZAR1g2U3NEc01sbmdndG52S1ZABRWExQzgZD'; // Ganti dengan access token kamu
 
         fetch(`https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink&access_token=${accessToken}`)
             .then(response => {
+                console.log('Response object:', response); // Tambahkan ini untuk melihat detail respons
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 return response.json();
             })
             .then(data => {
-                console.log(data); // Debug respons API
-
+                console.log('Parsed data:', data); // Debug respons API
                 if (!data || !data.data) {
                     console.error('No data returned from API');
                     return;
