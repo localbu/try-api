@@ -31,7 +31,7 @@
     <script>
         const accessToken = 'IGQWRNSVNETVVudWV5ZA1Vjd1BvaTFzdDF3OTE4SkpOZAlpWbGdLb1lHZAjlzMlJUb2dVTzJNUWVnNFh6ZAkNtVnNLZAHNHaE5teng2aERvRVRlbzdiZA1ZAsY2xMbjU2ZAm53V2NkUFVnRXFPSW9lU1ppWE5ISERXdHB6VFEZD'; // Ganti dengan access token kamu
 
-        fetch(`https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink&access_token=YOUR_ACCESS_TOKEN`)
+        fetch(`https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink&access_token=${accessToken}`)
             .then(response => {
                 console.log('Response object:', response); // Tambahkan ini untuk melihat detail respons
                 if (!response.ok) {
