@@ -1,3 +1,11 @@
-IGQWRPbWJzS0lETFpkUko5WGJTUkFEMTVLRS1GVmVFU0VNaWFiOUt4VDBIQnEwTEtWRVdvWmo4RGlFSW1XVEQzT2lMc0xZAc19vanJDbWpBZA0h3c08wek44VThBRnQwQjhZAR1g2U3NEc01sbmdndG52S1ZABRWExQzgZD
-
-IGQWRQY0xibzhjeDBPVFJhUk10ZA2swd3dPeUFDYjhfamJyc1N2b0pCMkRVOGRJa051cjliUDJId0Nhdm5jVlJWNFVBVjZAaWTdtdXlPOExlaW9YbG96ZAzJFVmRsRTRDWDdudldVTUlxTFBOdlpuQXNvcEdXa3daNWcZD
+fetch(`https://graph.instagram.com/me/media?fields=id,caption,media_url&access_token=IGQWRObXF2SmZANWVRpQ0FEMUdva2lrUjYtZAUxDSk51QklFeHYwWHctaU1NU0dOMkZAlZAUROVjUyanVpb25nYUJDNWZAiQ05SbkdEVFJvQlhBdnY5QjFaUFdNLW1ielgtSjlKX1dvcExiU0F0Rzl6WnBVTl9JZAG1GSWsZD`)
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+        data.data.forEach(post => {
+            console.log(`Post ID: ${post.id}`);
+            console.log(`Caption: ${post.caption}`);
+            console.log(`Media URL: ${post.media_url}`);
+        });
+    })
+    .catch(error => console.error('Error fetching Instagram posts:', error));

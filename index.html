@@ -3,82 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instagram Posts</title>
-    <style>
-        #instagram-posts {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .post {
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 10px;
-            max-width: 300px;
-            max-height: 500px;
-            overflow: scroll;
-        }
-        .post img, .post video {
-            width: 100%;
-            border-radius: 5px;
-        }
-    </style>
+    <title>Instagram Last 5 Posts</title>
 </head>
 <body>
-    <h1>Instagram Posts</h1>
-    <div id="instagram-posts"></div>
+    <h1>Instagram User Info</h1>
+    <button id="fetchDataBtn">Fetch Data</button>
+
+    <h2>Profile Info</h2>
+    <p><strong>Username:</strong> <span id="igUsername"></span></p>
+    <p><strong>Followers:</strong> <span id="igFollowers"></span></p>
+
+    <h2>Last 5 Posts</h2>
+    <ul id="postsList"></ul> <!-- This will display the last 5 posts -->
 
     <script>
-        const accessToken = 'IGQWRNSVNETVVudWV5ZA1Vjd1BvaTFzdDF3OTE4SkpOZAlpWbGdLb1lHZAjlzMlJUb2dVTzJNUWVnNFh6ZAkNtVnNLZAHNHaE5teng2aERvRVRlbzdiZA1ZAsY2xMbjU2ZAm53V2NkUFVnRXFPSW9lU1ppWE5ISERXdHB6VFEZD'; // Ganti dengan access token kamu
+        document.getElementById('fetchDataBtn').addEventListener('click', function() {
+            var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
 
-        fetch(`https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink&access_token=${accessToken}`)
-            .then(response => {
-                console.log('Response object:', response); // Tambahkan ini untuk melihat detail respons
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Parsed data:', data); // Debug respons API
-                if (!data || !data.data) {
-                    console.error('No data returned from API');
-                    return;
-                }
+            var requestOptions = {
+                method: "GET",
+                headers: myHeaders,
+                redirect: "follow",
+            };
 
-                const postsContainer = document.getElementById('instagram-posts');
-                // Ambil hanya 5 postingan terakhir
-                const latestPosts = data.data.slice(0, 5);
+            fetch("https://v1.nocodeapi.com/azzam/instagram/WzsSUiQzkbXtcXIT", requestOptions)
+                .then(response => response.json())  // Parse the response as JSON
+                .then(data => {
+                    console.log(data); // Check the full API response in the console
 
-                latestPosts.forEach(post => {
-                    const postElement = document.createElement('div');
-                    postElement.className = 'post';
+                    // Update Profile Info
+                    document.getElementById('igUsername').textContent = data.username || 'N/A';
+                    document.getElementById('igFollowers').textContent = data.followers || 'N/A';
 
-                    if (post.media_type === 'IMAGE' || post.media_type === 'CAROUSEL_ALBUM') {
-                        // Jika media adalah gambar
-                        postElement.innerHTML = `
-                            <a href="${post.permalink}" target="_blank">
-                                <img src="${post.media_url}" alt="${post.caption}" />
-                            </a>
-                            <p>${post.caption ? post.caption : ''}</p>
-                        `;
-                    } else if (post.media_type === 'VIDEO') {
-                        // Jika media adalah video
-                        postElement.innerHTML = `
-                            <a href="${post.permalink}" target="_blank">
-                                <video controls>
-                                    <source src="${post.media_url}" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                            </a>
-                            <p>${post.caption ? post.caption : ''}</p>
-                        `;
+                    // Update Last 5 Posts
+                    const postsList = document.getElementById('postsList');
+                    postsList.innerHTML = '';  // Clear any existing content
+                    if (data.recent_posts && data.recent_posts.length > 0) {
+                        data.recent_posts.slice(0, 5).forEach(post => {
+                            const li = document.createElement('li');
+                            li.innerHTML = `
+                                <p><strong>Caption:</strong> ${post.caption || 'No Caption'}</p>
+                                <p><strong>Likes:</strong> ${post.likes || 0}</p>
+                                <p><strong>Comments:</strong> ${post.comments || 0}</p>
+                                <img src="${post.image_url}" alt="Post Image" width="200">
+                            `;
+                            postsList.appendChild(li);
+                        });
+                    } else {
+                        postsList.innerHTML = '<li>No recent posts available.</li>';
                     }
-
-                    postsContainer.appendChild(postElement);
+                })
+                .catch(error => {
+                    console.log('Error fetching data:', error); // More detailed error logging
+                    alert('Error fetching data. Check the console for details.');
                 });
-            })
-            .catch(error => console.error('Error fetching Instagram posts:', error));
+        });
     </script>
 </body>
 </html>
